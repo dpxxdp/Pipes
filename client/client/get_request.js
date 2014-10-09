@@ -1,19 +1,19 @@
 var https = require('https');
 var fs = require('fs');
 
-var responseDataDump = './datadump.txt';
+
+var responseDataDump = './get_results.txt';
+var getParams = {
+    'which' : 'all'
+}
 
 var requestOptions = {
     hostname : 'localhost',
     port : 8000,
-    path : '/',
+    path : encodeURIComponent(JSON.stringify(getParams)),
     method : 'GET'
 }
 
-var postData = {
-    
-    
-}
 
 var secureRequest = https.request(requestOptions, function(response) {
     
@@ -24,11 +24,6 @@ var secureRequest = https.request(requestOptions, function(response) {
     });
     
 });
-
-
-if (isPostRequest) {
-    secureRequest.write(postData);
-}
 
 
 secureRequest.end();
