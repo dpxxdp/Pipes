@@ -12,7 +12,7 @@ var secureServer = https.createServer(server_settings.sslServerOptions, function
 	    //TODO figure out how to use request.body
 	    //TODO security
 	    //if request.auth ===...
-	    json_rpc_handler(request.body, function (error, jsonResponseObject) {
+	    json_rpc_handler.Handle(request.body, function (error, jsonResponseObject) {
 		if (error) {
 		    console.log("[500] " + request.method + " to " + request.url);
 		    response.writeHead(500, {"Content-Type": "application/json"});
