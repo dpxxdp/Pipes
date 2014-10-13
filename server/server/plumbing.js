@@ -9,7 +9,7 @@ var biz = require('./biz')
 function WouldSomebodyPleaseDoThePlumbing(plumbingRequestObject, callback) {
     
     //TODO security
-    var key = "CRYPT";
+    var key = server_settings.plumbingKey;
     var plumbingResponseObject;
     
     if (plumbingRequestObject.auth === key) {

@@ -4,38 +4,17 @@ var serverSettings = require('./serverSettings');
 
 var json_rpc_handler = require('./json_rpc_handler');
 
-var options = {
-    key: fs.readFileSync(serverSettings.sslKey),
-    cert: fs.readFileSync(serverSettings.sslCert)
-}
-
-
-
-var secureServer = https.createServer(options, function (request, response) {
+var secureServer = https.createServer(server_settings.sslServerOptions, function (request, response) {
     console.log("creating server...");
     
-      //
-      //log request information
-	  //check request type
-	  //check request credentials after each option
-	  //response = 
-	      //POST from Admin
-		    //messageProcessor.ProcessAdminPost(request.data);
-	      //POST from client
-		    //messageProcessor.ProcessClientPost(request.data);
-	      //GET from Admin
-		    //messageProcessor.ProcessAdminGet(request.data);
-	      //OTHER from Admin
-		    //messageProcessor.ProcessOther(request.data);
-      //
-      
-      
       switch (request.method) {
 	case 'GET':
 	    //TODO figure out how to use request.body
+	    //TODO security
+	    //if request.auth ===...
 	    json_rpc_handler(request.body, function (error, jsonResponseObject) {
 		if (error) {
-		    console.log("[501] " + request.method + " to " + request.url);
+		    console.log("[500] " + request.method + " to " + request.url);
 		    response.writeHead(500, {"Content-Type": "application/json"});
 		    response.write(error);
 		    response.end();
@@ -50,21 +29,28 @@ var secureServer = https.createServer(options, function (request, response) {
 	    
 	    break;
 	case 'POST':
-	    //check auth
-	    messenger.postThisData(request.body, function(error, responseObject) {
+	    //TODO security
+	    //if request.auth ===...
+	    json_rpc_handler(request.body, function (error, jsonResponseObject) {
 		if (error) {
-		    response.writeHead();
+		    console.log("[500] " + request.method + " to " + request.url);
+		    response.writeHead(500, {"Content-Type": "application/json"});
 		    response.write(error);
 		    response.end();
 		}
 		else {
+		    console.log("[200] " + request.method + " to " + request.url);
 		    response.writeHead(200, {"Content-Type": "application/json"});
-		    response.write()
+		    response.write(jsonResponseObject);
+		    response.end();
 		}
 	    });
 	    break;
 	default:
-	    response.writeHead(404, )
+	    console.log("[404] " + request.method + " to " + request.url);
+	    response.writeHead(404, {"Content-Type": "application/json"});
+	    response.write("[404] " + request.method + " to " + request.url)
+	    response.end();
 	    break;
       }
 });
