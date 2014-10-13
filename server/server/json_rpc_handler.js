@@ -8,8 +8,8 @@ var plumbing = require('./plumbing');
 
 /*JSON-RPC Request Object takes the form:
             jsonrpc : "2.0",
-            method : plumbing (uses the plumbing toolkit)
-            params : <plumbing Request Object>
+            method : p_database (uses the p_database remote procedure toolkit)
+            params : <p_database Request Object>
             id : <uniqueId>
 */
 
@@ -21,15 +21,15 @@ function Handle(jsonRequestString, callback) {
     
     if (jsonRequestObject.jsonrpc === "2.0"){
         switch (jsonRequestObject.method) {
-            case 'plumbing':
-                plumbing.WouldSomebodyPleaseDoThePlumbing(jsonRequestObject.params, function (error, plumbingResponseObject) {
+            case 'p_database':
+                p_database.CallDatabaseProcedure(jsonRequestObject.params, function (error, p_databaseResponseObject) {
                     if (error) {
                         callback(error);
                     }
                     else {
                         var jsonResponseObject = {
                             "jsonrpc" : "2.0",
-                            "result" : plumbingResponseObject,
+                            "result" : p_databaseResponseObject,
                             "error" : error,
                             "id" : jsonRequestObject.id
                         }
