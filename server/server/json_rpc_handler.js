@@ -7,13 +7,13 @@ var plumbing = require('./plumbing');
 //It takes a JSON-RPC Request String and a Callback function with signature callback(error, jsonResponseString)
 
 /*JSON-RPC Request Object takes the form:
- *          jsonrpc : "2.0",
+            jsonrpc : "2.0",
             method : plumbing (uses the plumbing toolkit)
             params : <plumbing Request Object>
             id : <uniqueId>
 */
 
-module.exports = function (jsonRequestString, callback) {
+function Handle(jsonRequestString, callback) {
     console.log("json_rpc_handler...");
     
     var jsonRequestObject = JSON.parse(jsonRequestString);
