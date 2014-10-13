@@ -1,14 +1,15 @@
-var mongoclient = require('mongodb').MongoClient
+var mongoclient = require('mongodb').MongoClient;
 var format = require('util').format;
+var server_settings = require('./server_settings');
 
-//bring in cache and mongo
+var mongoAddress = server_settings.databaseAddress;
 
 function GetNext(params, callback) {
     
     var low_i = param[0];
     var high_i = param[1];
 
-    mongoclient.connect('mongodb://127.0.0.1:27017/test', function(error, db) {
+    mongoclient.connect(mongoAddress, function(error, db) {
       if(error) callback(error)
     
       var collection = db.collection('test_insert');
@@ -31,7 +32,7 @@ function GetNext(params, callback) {
 
 function GetAll(params, callback) {
     
-    mongoclient.connect('mongodb://127.0.0.1:27017/test', function(error, db) {
+    mongoclient.connect(mongoAddress, function(error, db) {
       if(error) callback(error)
         
         
@@ -49,7 +50,7 @@ function Push(params, callback) {
     
     var bizData = params[0];
     
-    mongoclient.connect('mongodb://127.0.0.1:27017/test', function(error, db) {
+    mongoclient.connect(mongoAddress, function(error, db) {
       if(error) callback(error)
     
       var collection = db.collection(bizData[id]);
