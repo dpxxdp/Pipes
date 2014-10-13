@@ -8,8 +8,9 @@ var sslServerOptions = {
     cert: fs.readFileSync(serverSettings.sslCert)
 }
 
-var plumbingKey = 12345;
+var remote_procedure_key = 12345;
 
 
 var db_dir = '../db';
 
+var databaseAddress = 'mongodb://127.0.0.1:27017/test';
