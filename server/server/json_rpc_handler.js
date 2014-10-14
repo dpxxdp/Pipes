@@ -13,8 +13,8 @@ var p_database = require('./procedure_types/p_database');
             id : <uniqueId>
 */
 
-function Handle(jsonRequestString, callback) {
-    console.log("json_rpc_handler...");
+function ConsumeRequestString_CallBackWithResponseString(jsonRequestString, callback) {
+    console.log("json_rpc_handler consuming request...");
     
     var jsonRequestObject = JSON.parse(jsonRequestString);
     
@@ -22,10 +22,8 @@ function Handle(jsonRequestString, callback) {
     if (jsonRequestObject.jsonrpc === "2.0"){
         switch (jsonRequestObject.method) {
             case 'p_database':
-                p_database.CallDatabaseProcedure(jsonRequestObject.params, function (error, p_databaseResponseObject) {
-                    if (error) {
-                        callback(error);
-                    }
+                p_database.ConsumeDbRequestObject_CallBackWithDbResponseObject(jsonRequestObject.params, function (error, p_databaseResponseObject) {
+                    if (error) callback(error);
                     else {
                         var jsonResponseObject = {
                             "jsonrpc" : "2.0",
@@ -38,11 +36,16 @@ function Handle(jsonRequestString, callback) {
                         callback(null, jsonResponseString); 
                     }
                 });
+            case 'p_virtual':
+                //for expansion into virtual, in memory toolbox
+            default:
+                callback("unrecognized procedure_type (in JSONrequest.method)")
+                console.log("ERROR: unrecognized procedure_type (in JSONrequest.method)");
+                break;
         }
     }
     else {
-        callback("jsonrpc must be 2.0");
-        console.log("jsonrpc must be 2.0");
+        callback("unrecognized JSONrequest jsonrpc");
+        console.log("ERROR: unrecognized JSONrequest jsonrpc");
     }
-    
 }

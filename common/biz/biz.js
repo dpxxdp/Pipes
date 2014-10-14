@@ -1,23 +1,12 @@
 var ObjectID = require('mongodb').ObjectID;
 var TimeStamp = require('mongodb').TimeStamp;
 
-Class CustomerDoc {
-  ObjectId _id;
-  TimeStamp time;
-  CustomerData biz;
-}
-
-Class CustomerData {
-  String name;
-  String desc;
-  String weight;
+var CustomerDocument = {
+  'time' : "5:48pm",
+  'name' : "dan",
+  'desc' : "this desc",
+  'weight' : "this weight",
   
-  Location location;
-  String img;
-}
-
-Class Location {
-  string long;
-  string lat;
-  string desc;
+  'location' : {'long' : '45.5', 'lat' : '128', 'desc' : 'mid-Pac'},
+  'img' : 'bitbitbitbitbitbitbit'
 }

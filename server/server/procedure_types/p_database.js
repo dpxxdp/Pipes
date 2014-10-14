@@ -1,62 +1,65 @@
 /* remote procedure calls to access the db*/
-var biz = require('./biz')
+var mongo_client = require('./db_clients/mongo_client')
+
+
 //p_database takes a p_database Request Object (passed from json_request.params)
 //it calls the given requirement from ./requirements and passes params
-//contains auth che
-function DoDatabaseProcedure(p_databaseRequestObject, callback) {
+//contains auth check
+
+function ConsumeDbRequestObject_CallBackWithDbResponseObject(p_databaseRequestObject, callback) {
   //TODO security
-  var key = server_settings.plumbingKey;
-  var p_databaseResponseObject;
+  var key = server_settings.remote_procedure_key;
+  
   if (p_databaseRequestObject.auth === key) {
     switch(operation) {
       case 'GetNext':
-        biz.GetNext(plumbingRequestObject.params, function (error, customerData) {
+        biz.GetNext_CallBackWithCustomerData(p_databaseRequestObject.params, function (error, customerData) {
           if (error) { callback(error); }
           else
           {
-            plumbingResponseObject = {
+            var p_databaseResponseObject = {
             "operation" : 'GetNext',
             "returnData" : customerData,
-            "id" : plumbingRequestObject.id
+            "id" : p_databaseRequestObject.id
             }
           }
         });
         break;
       case 'GetAll':
-        biz.GetAll(plumbingRequestObject.params, function (error, customerDataBatch) {
+        biz.GetAll_CallBackWithCustomerDataBatch(p_databaseRequestObject.params, function (error, customerDataBatch) {
           if (error) { callback(error); }
           else
           {
-            plumbingResponseObject = {
+            var p_databaseResponseObject = {
             "operation" : 'GetAll',
-            "returnData" : customerData,
-            "id" : plumbingRequestObject.id
+            "returnData" : customerDataBatch,
+            "id" : p_databaseRequestObject.id
             }
           }
           });
         break;
       case 'Push':
-        biz.Push(plumbingRequestObject.params, function (error) {
+        biz.Push_CallBackWithErrorCode(p_databaseRequestObject.params, function (error) {
           if (error) { callback(error); }
           else
           {
-            plumbingResponseObject = {
+            var p_databaseResponseObject = {
             "operation" : 'Push',
             "returnData" : true,
-            "id" : plumbingRequestObject.id
+            "id" : p_databaseRequestObject.id
             }
           }
         });
         break;
       default :
         callback("Operation does not exist");
-        console.log("plumbId :" + plumbingRequestObject.Id + "Operation does not exist:" + plumbingRequestObject.operation);
+        console.log("plumbId :" + p_databaseRequestObject.Id + "Operation does not exist:" + p_databaseRequestObject.operation);
         break;
-      callback(null, plumbingResponseObject);
+      callback(null, p_databaseResponseObject);
     }
   }
   else {
   callback("Operation is not authorized");
-  console.log("plumbId :" + plumbingRequestObject.Id + "unauthorized operation attempted" + plumbingRequestObject.auth)
+  console.log("plumbId :" + p_databaseRequestObject.Id + "unauthorized operation attempted" + p_databaseRequestObject.auth)
   }
 }
