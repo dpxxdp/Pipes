@@ -3,11 +3,11 @@ var https = require('https');
 var jsonrpc_request_object = {
     jsonrpc : '2.0',
     method : 'p_database',
-    params : {operation: 'GetAll'},
+    params : {operation: 'Push', auth: 'p_database_key', params: {email: "meg@that.com", name: "reg"}, id:"54321"},
     id : 12345
 }
 
-//jsonrpc_request_string = stringify(jsonrpc_request_object);
+jsonrpc_request_string = JSON.stringify(jsonrpc_request_object);
 
 var options = {
     hostname: '127.0.0.1',
@@ -33,7 +33,7 @@ req.on('error', function(e) {
     console.log('problem with request: ' + e.message);
 });
 
-req.write("jsonrpc_request_string");
+req.write(jsonrpc_request_string);
 req.end();
 
 

@@ -13,16 +13,19 @@ var p_database = require('./procedure_types/p_database');
             id : <uniqueId>
 */
 
-function ConsumeRequestString_CallBackWithResponseString(jsonRequestString, callback) {
-    console.log("json_rpc_handler consuming request...");
+exports.ConsumeRequestString_CallBackWithResponseString = function (jsonRequestString, callback) {
+    console.log("json_rpc_handler: received request string: " + jsonRequestString);
     
     var jsonRequestObject = JSON.parse(jsonRequestString);
     
-    
+      
     if (jsonRequestObject.jsonrpc === "2.0"){
+        //console.log("json_rpc_handler: received RPC Object: " + jsonRequestObject);
+        
         switch (jsonRequestObject.method) {
             case 'p_database':
                 p_database.ConsumeDbRequestObject_CallBackWithDbResponseObject(jsonRequestObject.params, function (error, p_databaseResponseObject) {
+                    console.log("json_rpc_handler: p_database called back");
                     if (error) callback(error);
                     else {
                         var jsonResponseObject = {
@@ -32,10 +35,12 @@ function ConsumeRequestString_CallBackWithResponseString(jsonRequestString, call
                             "id" : jsonRequestObject.id
                         }
                         
-                        var jsonResponseString = stringify(jsonResponseObject);
+                        console.log("json_rpc_handler: constructing RPC response (toString): " + JSON.stringify(jsonResponseObject));
+                        var jsonResponseString = JSON.stringify(jsonResponseObject);
                         callback(null, jsonResponseString); 
                     }
                 });
+                break;
             case 'p_virtual':
                 //for expansion into virtual, in memory toolbox
             default:

@@ -4,7 +4,7 @@ var server_settings = require('../../server_settings');
 
 var mongoAddress = server_settings.databaseAddress;
 
-function GetByEmail_CallBackWithCustomerData(params, callback) {
+exports.GetByEmail_CallBackWithCustomerData = function (params, callback) {
     
     var email = params[0];
     
@@ -23,7 +23,7 @@ function GetByEmail_CallBackWithCustomerData(params, callback) {
 }
 
 
-function GetAll_CallBackWithCustomerDataBatch(params, callback) {
+exports.GetAll_CallBackWithCustomerDataBatch = function (params, callback) {
     
     mongoclient.connect(mongoAddress, function(error, db) {
         if(error) callback(error)
@@ -41,22 +41,25 @@ function GetAll_CallBackWithCustomerDataBatch(params, callback) {
 }
 
 
-function Push_CallBackWithErrorCode(params, callback) {
-    
-    var customerData = params[0];
+exports.Push_CallBackWithNoRowsInserted = function (params, callback) {
+    console.log("mongo_client: connecting to mongodb");
+    var customerData = params;
     
     mongoclient.connect(mongoAddress, function(error, db) {
         if(error) callback(error);
         else {
-            var customerDocument = db.collection(docName);
-            customerDocument.insert(customerData, function(error, docs) {
+            var testCollection = db.collection('testCollection');
+            testCollection.insert(customerData, function(error, docs) {
+                console.log("mongo_client: test_collection just called back");
                 if (error) callback(error);
                 else {
-                    collection.count(function(error, count) {
+                    testCollection.count(function(error, count) {
                         if (error) callback(error);
                         else {
-                            console.log(format("mongodb: inserted %s row(s)", count));
+                            console.log(format("mongo_client: inserted %s row(s)", count));
+                            console.log("mongo_client: inserted: " + customerData)
                             db.close();
+                            callback(null, count);
                         }
                     });
                 }
