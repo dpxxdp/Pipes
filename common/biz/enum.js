@@ -2,7 +2,8 @@
 
 
 exports.P_DB_PROCEDURES = {
-  INSERT : { name : "insert", params : [ "customerData" ] },
-  FIND : { name: "find", params : [ "searchFunction" ] },
-  UPDATE : { name: "update", params : [ "customerData" ] }
+  INIT: { name : "init", params : [collection: "collection"] },
+  INSERT : { name : "insert", params : [ customerData : "customerData" ] },
+  FIND : { name: "find", params : [ query: "query", fields: "fields" ] },
+  UPDATE : { name: "update", params : [ customerData: "customerData" ] }
 }
