@@ -1,5 +1,5 @@
 var https = require('https');
-var data_factory = require('./datafactory);
+var data_factory = require('./datafactory');
 var client_settings = require('./client_settings');
 var enumerations = require('../../common/enum');
 
@@ -10,8 +10,10 @@ exports.BuildAndSendRequest_CallBackWithResponse = function(method, operation, p
 	var id = client_settings.uniqueId;
 	var auth = client_settings.procedure_auth;
 	
+	//set options
 	var options = client_settings.requestOptions;
 	
+	//build body
 	switch(method) {
 		case METHODS.P_DATABASE:
 			var rpcParam = CreatePDatabaseRequest(operation, params, auth, id);
@@ -23,6 +25,7 @@ exports.BuildAndSendRequest_CallBackWithResponse = function(method, operation, p
 			console.log("https_client: method unrecognized: " + method.name);
 	}
 	
+	//send request
 	var secureRequest = https.request(options, function(response) {
 		console.log('https_client: request called back');
 		
