@@ -13,50 +13,55 @@ var procEnum = require('../../common/common/enum');
 exports.ConsumeDbRequestObject_CallBackWithDbResponseObject = function (req, callback) {
 	console.log("p_database: consuming request: " + JSON.stringify(req));
   
-  	var PROCEDURE = procEnum.P_DB_PROCEDURES;
+  	var PROCEDURES = procEnum.P_DB_PROCEDURES;
   	var adminKey = server_settings.admin_remote_procedure_key;
   	var customerKey = server_settings.customer_remote_procedure_key;
   	var p_response = {};
   	var id = req.id;
   	
   	
-  	switch(req.operation) {
-  		case PROCEDURE.INSERT:
+  	switch(req.procedure) {
+  		case PROCEDURES.INSERT:
   			if (req.auth !== (adminKey || customerKey)) {
-    			console.log("p_database: unauthorized db insert operation request: " + id);
+    			console.log("p_database: unauthorized db customer procedure request: " + id);
     			return callback("p_database: customer auth error, requestID: " + id);
   			}
-  			mongo_client.DoProcedure_CallBackWithResults(req.operation, req.params, function (error, results) {
-  				//console.log("p_database: mongo_client called back with error: " + error + "\n and results: " + results)
-  				p_response = ConstructResponse(req.operation, error, results, id);
-  				callback(null, p_response);
-  			});
+  			else {
+  				mongo_client.DoProcedure_CallBackWithResults(req.procedure, req.params, function (error, results) {
+  					//console.log("p_database: mongo_client called back with error: " + error + "\n and results: " + results)
+  					p_response = ConstructResponse(req.procedure, error, results, id);
+  					callback(null, p_response);
+  				});
+  			}
   			break;
-  		case PROCEDURE.FIND:
-  		case PROCEDURE.UPDATE:
+  		case PROCEDURES.INIT:
+  		case PROCEDURES.FIND:
+  		case PROCEDURES.UPDATE:
   			if(req.auth !== (adminKey)) {
-  				console.log("p_database: unauthorized db admin operation request: " + id);
+  				console.log("p_database: unauthorized db admin procedure request: " + id);
     			return callback("p_database: admin auth error, requestID: " + id);
   			}
-  			mongo_client.DoProcedure_CallBackWithResults(req.operation, req.params, function (error, results) {
-  					//console.log("p_database: mongo_client called back with error: " + error + "\n and results: " + results)
-  					p_response = ConstructResponse(req.operation, error, results, id);
-  					callback(null, p_response);
-  			});
+  			else {
+  				mongo_client.DoProcedure_CallBackWithResults(req.procedure, req.params, function (error, results) {
+  						//console.log("p_database: mongo_client called back with error: " + error + "\n and results: " + results)
+  						p_response = ConstructResponse(req.procedure, error, results, id);
+  						callback(null, p_response);
+  				});
+  			}
   			break;
   		default:
-  			console.log("p_database: unrecognized operation request: " + JSON.stringify(req.operation));
-  			return callback("p_database: unrecognized operation request: " + JSON.stringify(req.operation.name));
+  			console.log("p_database: unrecognized procedure request: " + req.procedure.name);
+  			return callback("p_database: unrecognized procedure request: " + req.procedure.name);
   			break;
   	}
 }
 
-function ConstructResponse(operation, error, returnData, id) {
+function ConstructResponse(procedure, error, results, id) {
   //console.log("p_database: constructing response");
   
   var response = {
-    'operation' : operation,
-    'returnData' : returnData,
+    'procedure' : procedure,
+    'results' : results,
     'error' : error,
     'id' : id
   };
