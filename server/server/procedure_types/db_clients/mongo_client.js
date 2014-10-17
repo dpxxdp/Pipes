@@ -62,16 +62,17 @@ exports.DoProcedure_CallBackWithResults = function(operation, params, callback) 
 
                 var collection = db.collection(params.collection);
                 
-                collection.find(params.query, function(error, docs) {
+                collection.find(params.query, function(error, cursor) {
                     console.log("mongo_client: test_collection just called back");
                     if (error) { return callback(error) };
                         
+                    cursor.toArray(function(error, docs)) {
                         console.log(format("mongo_client: find successful"));
                         db.close();
-                        console.log(docs);
+                        //console.log(docs);
                         callback(null, docs);
+                    });
                 });
-                
             });
             
             break;
