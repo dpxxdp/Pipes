@@ -3,7 +3,7 @@ exports.CreateCustomerData = function (newEmail, newDesc, newWeight, newLocation
     var customerData = {
         email : newEmail,
         desc : newDesc,
-        weight : newWeigt,
+        weight : newWeight,
         location : newLocation,
         img : newImg
     };

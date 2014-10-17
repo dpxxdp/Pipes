@@ -1,14 +1,14 @@
 var mongoclient = require('mongodb').MongoClient;
 var format = require('util').format;
 var server_settings = require('../../server_settings');
-var enumurations = require('../../common/common/enum');
+var enumurations = require('../../../../common/biz/enum');
 
 var mongoAddress = server_settings.databaseAddress;
-var PROCEDURE = enumerations.P_DB_PROCEDURES;
+var PROCEDURE = enumurations.P_DATABASE_OPERATIONS;
 
 
-exports.DoProcedure_CallBackWithResults(operation, params, callback) {
-    console.log("mongo_client: running procedure: " + operation.name);
+exports.DoProcedure_CallBackWithResults = function(operation, params, callback) {
+    console.log("mongo_client: running procedure: " + operation);
     
     switch(operation) {
         case PROCEDURE.INIT:
@@ -53,19 +53,22 @@ exports.DoProcedure_CallBackWithResults(operation, params, callback) {
             break;
             
         case PROCEDURE.FIND:
-            var query = params.query;
-            var fields = params.fields;
-            
+
+            console.log("mongo_client: params: " + params.query + ", params as string:" + JSON.stringify(params.query));
+
             mongoclient.connect(mongoAddress, function(error, db) {
                 console.log("mongo_client: MongoClient just called back")
                 if(error) { return callback(error) };
+
+                var collection = db.collection(params.collection);
                 
-                customerCollection.find(query, fields, function(error, docs) {
+                collection.find(params.query, function(error, docs) {
                     console.log("mongo_client: test_collection just called back");
                     if (error) { return callback(error) };
                         
                         console.log(format("mongo_client: find successful"));
                         db.close();
+                        console.log(docs);
                         callback(null, docs);
                 });
                 
@@ -75,8 +78,8 @@ exports.DoProcedure_CallBackWithResults(operation, params, callback) {
             
         case PROCEDURE.UPDATE:
         default:
-            console.log("p_database: unrecognized operation request: " + JSON.stringify(operation.name));
-            return callback("p_database: unrecognized operation request: " + JSON.stringify(operation.name));
+            console.log("p_database: unrecognized operation request: " + JSON.stringify(operation));
+            return callback("p_database: unrecognized operation request: " + JSON.stringify(operation));
             break;
     }
 }

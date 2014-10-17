@@ -11,6 +11,6 @@ exports.requestOptions = {
 }
 
 
-exports.procedure_auth = '12345';
+exports.procedure_auth = 'key';
 
-exports.uniqueId = '98765';
+exports.uniqueId = '987';

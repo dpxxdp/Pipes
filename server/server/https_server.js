@@ -11,8 +11,8 @@ var options = server_settings.sslServerOptions;
 console.log('creating server...');
 var secureServer = https.createServer(options, function (request, response) {
     console.log("server: received request of type: " + request.method);
-    
-      switch (request.method) {
+
+    switch (request.method) {
 	case 'POST':
 	    //TODO figure out how to use request.body
 	    //TODO security
@@ -26,22 +26,23 @@ var secureServer = https.createServer(options, function (request, response) {
 
 	    request.on('end', function() {
 		
-		console.log("server: calling json_rpc_handler with request string: " + bodyBuffer)
-		json_rpc_handler.ConsumeRequestString_CallBackWithResponseString(bodyBuffer, function (error, jsonResponseObject) {
-		    console.log("server: json_rpc_handler called back");
-		    if (error) {
-			console.log("Sent [500] in response to " + request.method + "\nError: " + error);
-			response.writeHead(500, {"Content-Type": "application/json"});
-			response.write(error);
-			response.end();
-		    }
-		    else {
-		        console.log("Sent [200] in response to " + request.method);
-		        response.writeHead(200, {"Content-Type": "application/json"});
-		        response.write(jsonResponseObject);
-		        response.end();
-		    }
-		});
+			console.log("server: calling json_rpc_handler with request string: " + bodyBuffer)
+			json_rpc_handler.ConsumeRequestString_CallBackWithResponseString(bodyBuffer, function (error, jsonResponseString) {
+			    console.log("server: json_rpc_handler called back");
+			    if (error) {
+				console.log("Sent [500] in response to " + request.method + "\nError: " + error);
+				response.writeHead(500, {"Content-Type": "application/json"});
+				response.write(error);
+				response.end();
+			    }
+			    else {
+			        console.log("Sent [200] in response to " + request.method);
+			        response.writeHead(200, {"Content-Type": "application/json"});
+			        response.write(jsonResponseString);
+			        response.end();
+			    }
+			});
+
 	    });
 	    break;
 	case 'GET':

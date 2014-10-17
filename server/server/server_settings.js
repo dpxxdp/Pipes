@@ -11,8 +11,8 @@ exports.sslServerOptions = {
     cert: fs.readFileSync(sslCert)
 }
 
-exports.remote_procedure_key = "p_database_key";
-
+exports.admin_remote_procedure_key = "key";
+exports.customer_remote_procedure_key = "key";
 
 exports.databaseAddress = 'mongodb://127.0.0.1:27017/test';
 
